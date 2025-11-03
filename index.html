@@ -5,36 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CSV → Gráficos desde GitHub</title>
   <meta name="description" content="Lee archivos .csv desde una carpeta en GitHub y genera gráficos interactivos." />
-
-  <!-- Tailwind (CDN). Para producción idealmente compilar Tailwind, pero esto funciona en GitHub Pages. -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Chart.js (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- PapaParse (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
   <link rel="icon" href="assets/favicon.svg" />
   <style>
-    /* Scroll suave para contenedores */
     .scrollbar-thin::-webkit-scrollbar { height: 8px; width: 8px; }
     .scrollbar-thin::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 8px; }
     .scrollbar-thin:hover::-webkit-scrollbar-thumb { background: #9ca3af; }
-    .chip { @apply text-xs px-2 py-1 rounded-full bg-gray-100 border border-gray-200; }
-    .card { @apply rounded-2xl shadow-sm border border-gray-200 bg-white; }
+    .card { border-radius: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,.04); border: 1px solid #e5e7eb; background: #fff; }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
   <header class="sticky top-0 z-30 border-b border-gray-200 bg-white/80 backdrop-blur">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
       <h1 class="text-xl sm:text-2xl font-semibold">CSV → Gráficos desde GitHub</h1>
-      <div class="text-xs sm:text-sm text-gray-500">v1.0.0</div>
+      <div class="text-xs sm:text-sm text-gray-500">v1.2.0 · LobbyInsightAgent</div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-    <!-- Configuración del repositorio -->
     <section class="card p-4">
       <h2 class="text-lg font-semibold mb-3">1) Origen en GitHub</h2>
       <div class="grid sm:grid-cols-2 lg:grid-cols-6 gap-3">
@@ -44,7 +34,7 @@
         </div>
         <div class="lg:col-span-2">
           <label class="block text-sm mb-1">Repo</label>
-          <input id="repo" class="w-full border rounded-lg px-3 py-2" placeholder="ej: datos-publicos" />
+          <input id="repo" class="w-full border rounded-lg px-3 py-2" placeholder="LobbyInsightAgent" />
         </div>
         <div>
           <label class="block text-sm mb-1">Branch</label>
@@ -52,10 +42,10 @@
         </div>
         <div class="lg:col-span-2">
           <label class="block text-sm mb-1">Carpeta</label>
-          <input id="folder" class="w-full border rounded-lg px-3 py-2" placeholder="ej: data/csv" />
+          <input id="folder" class="w-full border rounded-lg px-3 py-2" placeholder="data/csv" />
         </div>
         <div class="lg:col-span-2">
-          <label class="block text-sm mb-1">Token (opcional, para repos privados)</label>
+          <label class="block text-sm mb-1">Token (opcional, repo privado)</label>
           <input id="token" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="ghp_..." />
         </div>
         <div class="flex items-end gap-2">
@@ -64,23 +54,23 @@
           <button id="btnLoadCfg" class="px-3 py-2 rounded-lg border">Cargar origen</button>
         </div>
       </div>
-      <p class="text-xs text-gray-500 mt-2">Consejo: si el repo es privado, agrega un token de lectura. El token no se guarda.</p>
+      <p class="text-xs text-gray-500 mt-2">
+        Configura por <code>assets/config.json</code> o por URL:
+        <code>?owner=&repo=&branch=&folder=&lock=1</code>
+      </p>
     </section>
 
-    <!-- Lista de archivos -->
     <section class="card p-4">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold">2) Selecciona archivos CSV</h2>
-        <div class="text-sm text-gray-500">También puedes <label for="localFile" class="underline cursor-pointer">cargar locales</label> (<span class="chip">opcional</span>)</div>
+        <div class="text-sm text-gray-500">También puedes <label for="localFile" class="underline cursor-pointer">cargar locales</label></div>
       </div>
       <input id="localFile" type="file" accept=".csv" multiple class="hidden" />
-
       <div id="filesWrap" class="mt-3">
         <div class="text-sm text-gray-500">Primero lista los archivos para verlos acá.</div>
       </div>
     </section>
 
-    <!-- Construcción de gráfico -->
     <section class="card p-4">
       <h2 class="text-lg font-semibold mb-3">3) Construir gráfico</h2>
       <div class="grid md:grid-cols-2 gap-4">
@@ -115,7 +105,6 @@
             <button id="btnExportCSV" class="px-4 py-2 rounded-lg border" disabled>Exportar CSV combinado</button>
           </div>
         </div>
-
         <div class="space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="font-medium">Previsualización de datos</h3>
@@ -126,7 +115,6 @@
       </div>
     </section>
 
-    <!-- Render del gráfico -->
     <section class="card p-4">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold">4) Gráfico</h2>
@@ -137,7 +125,6 @@
       </div>
     </section>
 
-    <!-- Mensajes -->
     <section id="messages" class="space-y-2"></section>
   </main>
 
